@@ -191,9 +191,9 @@ public class Application {
 
             Thread.sleep(500);
 
-            printGameStatus(player, betLimit, game);
             game.getPlayer().initPlayerCard(game.getDeck()); // 플레이어 카드 초기 세팅
             game.getDealer().initDealerCard(game.getDeck()); // 딜러 카드 초기 세팅
+            printGameStatus(player, betLimit, game);
             printBothCards(dealer.getDealerCard(), player.getPlayerCard(),true);
 
             // 플레이어 블랙잭 여부 검사
@@ -621,7 +621,7 @@ public class Application {
         System.out.println("\n====== Black Jack ======");
         System.out.println("현재 티어: " + member.getTier());
         System.out.println("잔고: $" + member.getDollars());
-        System.out.println("최대 베팅: $" + betLimit);
+        System.out.println("최대 베팅: $" + betLimit + ", 남은 카드: " + game.getDeck().cardsLeft());
         System.out.println("현재 베팅: $" + game.getBet());
         System.out.println("현재 손익: " + game.getResult() + "달러($)");
     }
