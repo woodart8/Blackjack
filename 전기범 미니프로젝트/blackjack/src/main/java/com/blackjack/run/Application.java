@@ -532,7 +532,7 @@ public class Application {
                                     memberService.modifyMember(player);
                                     break;
                                 }
-                                else if (dealerPoints == splitPoints) {
+                                else if (dealerPoints == playerPoints) {
                                     game.push();
                                     System.out.println("\n푸시");
                                     memberService.modifyMember(player);
