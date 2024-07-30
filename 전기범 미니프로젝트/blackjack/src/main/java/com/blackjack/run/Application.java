@@ -287,7 +287,7 @@ public class Application {
                                         ,playerCard.get(1))); // 플레이어 블랙잭 여부 검사
                                 player.setSplit(true);
                                 printGameStatus(player, game);
-                                printBothCards(player, dealer, false);
+                                printBothCards(player, dealer, true);
                                 break;
                             } else if (decisionSplit.equalsIgnoreCase("N")) {
                                 break;
