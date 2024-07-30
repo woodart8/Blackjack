@@ -53,8 +53,6 @@ public class Card {
         StringBuilder line3 = new StringBuilder();
         StringBuilder line4 = new StringBuilder();
         StringBuilder line5 = new StringBuilder();
-        StringBuilder line6 = new StringBuilder();
-        StringBuilder line7 = new StringBuilder();
 
         for (Card card : cards) {
             String[] cardLines;
@@ -68,8 +66,6 @@ public class Card {
             line3.append(cardLines[2]).append(" ");
             line4.append(cardLines[3]).append(" ");
             line5.append(cardLines[4]).append(" ");
-            line6.append(cardLines[5]).append(" ");
-            line7.append(cardLines[6]).append(" ");
         }
 
         System.out.println(line1);
@@ -77,8 +73,6 @@ public class Card {
         System.out.println(line3);
         System.out.println(line4);
         System.out.println(line5);
-        System.out.println(line6);
-        System.out.println(line7);
     }
 
     public Suit getSuit() {
@@ -117,13 +111,12 @@ public class Card {
     }
 
     public String getBackSide() {
-        return "┌─────────┐\n" +
-               "│░░░░░░░░░│\n" +
-               "│░░░░░░░░░│\n" +
-               "│░░░░░░░░░│\n" +
-               "│░░░░░░░░░│\n" +
-               "│░░░░░░░░░│\n" +
-               "└─────────┘";
+        return """
+                ┌───────┐
+                │░░░░░░░│
+                │░░░░░░░│
+                │░░░░░░░│
+                └───────┘""";
     }
 
     public String getFrontSide() {
@@ -131,21 +124,17 @@ public class Card {
         String rankDisplay = getRankDisplay(rank);
         // 카드 출력 모양
         if(!rankDisplay.equals("10")) {
-            return "┌─────────┐\n" +
-                   "│ " + rankDisplay + "       │\n" +
-                   "│         │\n" +
-                   "│    " + suitSymbol + "    │\n" +
-                   "│         │\n" +
-                   "│       " + rankDisplay + " │\n" +
-                   "└─────────┘";
+            return "┌───────┐\n" +
+                   "│ " + rankDisplay + "     │\n" +
+                   "│   " + suitSymbol + "   │\n" +
+                   "│     " + rankDisplay + " │\n" +
+                   "└───────┘";
         } else {
-            return "┌─────────┐\n" +
-                   "│ " + rankDisplay + "      │\n" +
-                   "│         │\n" +
-                   "│    " + suitSymbol + "    │\n" +
-                   "│         │\n" +
-                   "│      " + rankDisplay + " │\n" +
-                   "└─────────┘";
+            return "┌───────┐\n" +
+                   "│ " + rankDisplay + "    │\n" +
+                   "│   " + suitSymbol + "   │\n" +
+                   "│    " + rankDisplay + " │\n" +
+                   "└───────┘";
         }
     }
 

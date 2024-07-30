@@ -1,22 +1,21 @@
 package com.blackjack.domain.game.aggregate;
 
-import com.blackjack.domain.member.aggregate.Member;
-
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Game implements Serializable {
 
     private int gameNo; // 게임번호
-    private Player player;// 플레이어
+    private final Player player;// 플레이어
     private int result = 0; // 손익
 
     private final transient Dealer dealer = new Dealer(); // 딜러
     private final transient Deck deck = new Deck(); // 카드덱
     private transient int betLimit = 10; // 최대 베팅 한도
     private transient int bet = 0; // 현재 베팅 금액
+    private transient int splitBet = 0; // 스플릿 베팅 금액
     private transient int insuranceBet = 0; // 인슈어런스 베팅 금액
-    private transient boolean evenMoney = false; // 이븐 머니 여부
 
     public Game(Player player) {
         this.player = player;
@@ -32,11 +31,6 @@ public class Game implements Serializable {
             case GRANDMASTER: this.betLimit = 5000; break;
             case SUPER_GRANDMASTER: this.betLimit = 20000; break;
         }
-    }
-
-    public void bet(int dollars) {
-        player.setDollars(player.getDollars() - dollars); // 베팅 금액만큼 플레이어의 돈에서 차감
-        this.bet += dollars; // 현재 베팅 금액에 반영
     }
 
     public void insurance(boolean checkDealerBlackjack) {
@@ -55,7 +49,24 @@ public class Game implements Serializable {
 
     public void evenMoney() {
         playerWin(); // 이븐 머니인 경우 베팅 금액의 200%를 지급
-        this.evenMoney = false;  // 이븐 머니 초기화
+    }
+
+    public void split() {
+        ArrayList<Card> playerCards = player.getPlayerCard();
+        ArrayList<Card> splitCards = player.getSplitCard();
+        splitCards.add(playerCards.get(1));
+        playerCards.remove(1);
+        playerCards.add(this.deck.dealCard());
+    }
+
+    public void bet(int dollars) {
+        player.setDollars(player.getDollars() - dollars); // 베팅 금액만큼 플레이어의 돈에서 차감
+        this.bet += dollars; // 현재 베팅 금액에 반영
+    }
+
+    public void splitBet(int dollars) {
+        player.setDollars(player.getDollars() - dollars);
+        this.splitBet += dollars;
     }
 
     public void blackjack() {
@@ -65,11 +76,25 @@ public class Game implements Serializable {
         playerWin(); // 베팅 금액의 200% 지급
     }
 
+    public void splitBlackjack() {
+        // 플레이어가 블랙잭으로 승리한 경우 베팅 금액의 250% 지급
+        player.setDollars(player.getDollars() + this.splitBet/2); // 베팅 금액의 50% 지급
+        this.result += (this.splitBet/2);
+        playerSplitWin(); // 베팅 금액의 200% 지급
+    }
+
     public void surrender() {
         // 플레이어가 항복한 경우
         player.setDollars(player.getDollars() + this.bet/2); // 현재 베팅 금액의 50%를 돌려받는다.
         this.result += (this.bet/2);
         dealerWin();
+    }
+
+    public void splitSurrender() {
+        // 플레이어가 항복한 경우
+        player.setDollars(player.getDollars() + this.splitBet/2); // 현재 베팅 금액의 50%를 돌려받는다.
+        this.result += (this.splitBet/2);
+        dealerSplitWin();
     }
 
     public void playerWin() {
@@ -78,15 +103,32 @@ public class Game implements Serializable {
         this.bet = 0; // 베팅 금액 초기화
     }
 
+    public void playerSplitWin() {
+        player.setDollars(player.getDollars() + 2*this.splitBet); // 베팅 금액의 200% 지급
+        this.result += this.splitBet;
+        this.splitBet = 0; // 베팅 금액 초기화
+    }
+
     public void dealerWin() {
         this.result -= this.bet;
         this.bet = 0; // 베팅 금액 초기화
+    }
+
+    public void dealerSplitWin() {
+        this.result -= this.splitBet;
+        this.splitBet = 0; // 베팅 금액 초기화
     }
 
     public void push() {
         // 비겼을 경우
         player.setDollars(player.getDollars() + this.bet); // 베팅 금액 반환
         this.bet = 0; // 베팅 금액 초기화
+    }
+
+    public void splitPush() {
+        // 비겼을 경우
+        player.setDollars(player.getDollars() + this.splitBet); // 베팅 금액 반환
+        this.splitBet = 0; // 베팅 금액 초기화
     }
 
     public void placeInsurance() {
@@ -129,48 +171,20 @@ public class Game implements Serializable {
         return player;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
     public int getBetLimit() {
         return betLimit;
-    }
-
-    public void setBetLimit(int betLimit) {
-        this.betLimit = betLimit;
     }
 
     public int getBet() {
         return bet;
     }
 
-    public void setBet(int bet) {
-        this.bet = bet;
-    }
-
-    public int getInsuranceBet() {
-        return insuranceBet;
-    }
-
-    public void setInsuranceBet(int insuranceBet) {
-        this.insuranceBet = insuranceBet;
-    }
-
-    public boolean getEvenMoney() {
-        return evenMoney;
-    }
-
-    public void setEvenMoney(boolean evenMoney) {
-        this.evenMoney = evenMoney;
+    public int getSplitBet() {
+        return splitBet;
     }
 
     public int getResult() {
         return result;
-    }
-
-    public void setResult(int result) {
-        this.result = result;
     }
 
     @Override
