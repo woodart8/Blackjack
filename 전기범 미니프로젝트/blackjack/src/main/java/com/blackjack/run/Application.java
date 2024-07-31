@@ -776,10 +776,10 @@ public class Application {
     private static void updateTier(Member member) {
         int dollars = member.getDollars();
         if(dollars >= 200000) member.setTier(Tier.SUPER_GRANDMASTER);
-        if(dollars >= 50000) member.setTier(Tier.GRANDMASTER);
-        if(dollars >= 15000) member.setTier(Tier.MASTER);
-        if(dollars >= 5000) member.setTier(Tier.DIAMOND);
-        if(dollars >= 2000) member.setTier(Tier.EMERALD);
+        else if(dollars >= 50000) member.setTier(Tier.GRANDMASTER);
+        else if(dollars >= 15000) member.setTier(Tier.MASTER);
+        else if(dollars >= 5000) member.setTier(Tier.DIAMOND);
+        else if(dollars >= 2000) member.setTier(Tier.EMERALD);
         else if(dollars >= 800) member.setTier(Tier.PLATINUM);
         else if(dollars >= 400) member.setTier(Tier.GOLD);
         else if(dollars >= 200) member.setTier(Tier.SILVER);
