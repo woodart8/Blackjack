@@ -11,7 +11,8 @@ public class GameRepository {
 
     private ArrayList<Game> gameList = new ArrayList<>();
     private final File file;
-    private final String filePath = "전기범 미니프로젝트/blackjack/src/main/java/com/blackjack/domain/game/db/gameDB.dat";
+    private final String filePath = "전기범 미니프로젝트/blackjack/src/main/resources/gameDB.dat";
+//    private final String jarFilePath = "/gameDB.dat";
 
     public GameRepository() {
         file = new File(filePath);
