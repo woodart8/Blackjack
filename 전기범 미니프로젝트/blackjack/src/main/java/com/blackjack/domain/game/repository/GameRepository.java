@@ -12,10 +12,10 @@ public class GameRepository {
     private ArrayList<Game> gameList = new ArrayList<>();
     private final File file;
     private final String filePath = "전기범 미니프로젝트/blackjack/src/main/resources/gameDB.dat";
-//    private final String jarFilePath = "/gameDB.dat";
+    private final String jarFilePath = "./gameDB.dat";
 
     public GameRepository() {
-        file = new File(filePath);
+        file = new File(jarFilePath);
         // 파일이 없는 경우
         if(!file.exists()) {
             // 파일 생성 및 헤더 추가
@@ -90,7 +90,7 @@ public class GameRepository {
         try {
             moo = new MyObjectOutput(
                     new BufferedOutputStream(
-                            new FileOutputStream(filePath, true)
+                            new FileOutputStream(jarFilePath, true)
                     )
             );
             game.setGameNo(selectLastGameNo()+1);

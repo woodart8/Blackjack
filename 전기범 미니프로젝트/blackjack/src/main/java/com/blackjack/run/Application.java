@@ -685,9 +685,9 @@ public class Application {
         Scanner sc = new Scanner(System.in);
         System.out.println("\n비밀번호 입력: ");
         String memPwd = sc.nextLine();
-        System.out.println("[계정 삭제]를 입력하세요: ");
+        System.out.println("[delete account]를 입력하세요: ");
         String checkConfirm = sc.nextLine();
-        if(checkConfirm.equals("계정 삭제")) {
+        if(checkConfirm.equals("delete account")) {
             MemberResponseObject checkPwdValid = memberService.findMemberByMemNo(memNo);
             if(memPwd.equals(checkPwdValid.getMember().getPwd())) return checkPwdValid.getMember();
             else {

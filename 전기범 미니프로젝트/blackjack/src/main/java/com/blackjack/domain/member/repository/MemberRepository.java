@@ -11,11 +11,11 @@ public class MemberRepository {
 
     private final ArrayList<Member> memberList = new ArrayList<>();
     private final String filePath = "전기범 미니프로젝트/blackjack/src/main/resources/memberDB.dat";
-//    private final String jarFilePath = "/memberDB.dat";
+    private final String jarFilePath = "./memberDB.dat";
     private final File file;
 
     public MemberRepository() {
-        file = new File(filePath);
+        file = new File(jarFilePath);
         // 파일이 없는 경우
         if(!file.exists()) {
             // 파일 생성 및 헤더 추가
@@ -89,7 +89,7 @@ public class MemberRepository {
         try {
             moo = new MyObjectOutput(
                     new BufferedOutputStream(
-                            new FileOutputStream(filePath, true)
+                            new FileOutputStream(jarFilePath, true)
                     )
             );
             member.setMemNo(selectLastMemberNo()+1);
