@@ -363,63 +363,65 @@ public class Application {
                     if (player.isSplit()) {
                         splitCard.add(deck.dealCard());
                         player.setSplitBlackjack(game.isBlackjack(splitCard.get(0),splitCard.get(1)));
-                        while (true) {
-                            Thread.sleep(800);
-                            printGameStatus(player, game);
-                            printBothCards(player, dealer, true);
+                        if(!player.isSplitBlackjack()) {
+                            while (true) {
+                                Thread.sleep(800);
+                                printGameStatus(player, game);
+                                printBothCards(player, dealer, true);
 
-                            // 카드 점수 합이 21 초과이면 버스트
-                            if (Card.sumCardsPoint(splitCard,false) > 21) {
-                                player.setSplitBust(true);
-                                game.dealerSplitWin();
-                                memberService.modifyMember(player);
-                                System.out.println("\n스플릿 버스트");
-                                System.out.println("스플릿: 딜러 Win");
-                                break;
-                            }
-
-                            // 더블다운을 한 경우 여기서 바로 break
-                            if (player.isSplitDoubleDown()) break;
-
-                            System.out.println("\n=========  스플릿 핸드  =========");
-                            System.out.println("힛:1, 스탠드:2, 더블다운:3, 서렌더:4");
-                            String line = sc.nextLine();
-                            try {
-                                int input = Integer.parseInt(line);
-                                switch (input) {
-                                    case 1: // 힛(한장 더 받기)
-                                        splitCard.add(deck.dealCard());
-                                        player.setSplitHit(true);
-                                        break;
-                                    case 2: // 스탠드(그만 받기)
-                                        player.setSplitStand(true);
-                                        break;
-                                    case 3: // 더블다운(처음 2장일 때 베팅을 2배로 올리고, 한장만 더 받기)
-                                        if (player.getDollars() < initialBet) {
-                                            System.out.println("\n베팅 금액이 모자랍니다.");
-                                            break;
-                                        }
-                                        if (!player.isSplitHit()) {
-                                            game.splitBet(initialBet);
-                                            memberService.modifyMember(player);
-                                            splitCard.add(deck.dealCard());
-                                            player.setSplitDoubleDown(true);
-                                        }
-                                        else System.out.println("\n이미 힛을 하여 더블다운이 불가합니다.");
-                                        break;
-                                    case 4: // 서렌더(항복하고 베팅 금액의 절반만 챙기기)
-                                        game.splitSurrender();
-                                        memberService.modifyMember(player);
-                                        player.setSplitSurrender(true);
-                                        System.out.println("\n스플릿 서렌더");
-                                        System.out.println("스플릿: 딜러 Win");
-                                        break;
-                                    default: System.out.println("\n잘못된 입력입니다.");
+                                // 카드 점수 합이 21 초과이면 버스트
+                                if (Card.sumCardsPoint(splitCard, false) > 21) {
+                                    player.setSplitBust(true);
+                                    game.dealerSplitWin();
+                                    memberService.modifyMember(player);
+                                    System.out.println("\n스플릿 버스트");
+                                    System.out.println("스플릿: 딜러 Win");
+                                    break;
                                 }
-                            } catch (NumberFormatException e) {
-                                System.out.println("\n잘못된 입력입니다.");
+
+                                // 더블다운을 한 경우 여기서 바로 break
+                                if (player.isSplitDoubleDown()) break;
+
+                                System.out.println("\n=========  스플릿 핸드  =========");
+                                System.out.println("힛:1, 스탠드:2, 더블다운:3, 서렌더:4");
+                                String line = sc.nextLine();
+                                try {
+                                    int input = Integer.parseInt(line);
+                                    switch (input) {
+                                        case 1: // 힛(한장 더 받기)
+                                            splitCard.add(deck.dealCard());
+                                            player.setSplitHit(true);
+                                            break;
+                                        case 2: // 스탠드(그만 받기)
+                                            player.setSplitStand(true);
+                                            break;
+                                        case 3: // 더블다운(처음 2장일 때 베팅을 2배로 올리고, 한장만 더 받기)
+                                            if (player.getDollars() < initialBet) {
+                                                System.out.println("\n베팅 금액이 모자랍니다.");
+                                                break;
+                                            }
+                                            if (!player.isSplitHit()) {
+                                                game.splitBet(initialBet);
+                                                memberService.modifyMember(player);
+                                                splitCard.add(deck.dealCard());
+                                                player.setSplitDoubleDown(true);
+                                            } else System.out.println("\n이미 힛을 하여 더블다운이 불가합니다.");
+                                            break;
+                                        case 4: // 서렌더(항복하고 베팅 금액의 절반만 챙기기)
+                                            game.splitSurrender();
+                                            memberService.modifyMember(player);
+                                            player.setSplitSurrender(true);
+                                            System.out.println("\n스플릿 서렌더");
+                                            System.out.println("스플릿: 딜러 Win");
+                                            break;
+                                        default:
+                                            System.out.println("\n잘못된 입력입니다.");
+                                    }
+                                } catch (NumberFormatException e) {
+                                    System.out.println("\n잘못된 입력입니다.");
+                                }
+                                if (player.isSplitStand() || player.isSplitSurrender()) break;
                             }
-                            if (player.isSplitStand() || player.isSplitSurrender()) break;
                         }
                     }
 
@@ -475,7 +477,8 @@ public class Application {
                                 }
                                 else if (dealerPoints > playerPoints) {
                                     game.dealerWin();
-                                    game.playerSplitWin();
+                                    if(player.isSplitBlackjack()) game.splitBlackjack();
+                                    else game.playerSplitWin();
                                     System.out.println("\n오리진: 딜러 Win");
                                     System.out.println("스플릿: 플레이어 Win");
                                     memberService.modifyMember(player);
@@ -499,14 +502,16 @@ public class Application {
                                 }
                                 else if (dealerPoints == playerPoints) {
                                     game.push();
-                                    game.playerSplitWin();
+                                    if(player.isSplitBlackjack()) game.splitBlackjack();
+                                    else game.playerSplitWin();
                                     System.out.println("\n오리진: 푸시");
                                     System.out.println("스플릿: 플레이어 Win");
                                     memberService.modifyMember(player);
                                     break;
                                 }
                                 else if (dealerPoints > splitPoints) {
-                                    game.playerWin();
+                                    if(player.isBlackjack()) game.blackjack();
+                                    else game.playerWin();
                                     game.dealerSplitWin();
                                     System.out.println("\n오리진: 플레이어 Win");
                                     System.out.println("스플릿: 딜러 Win");
@@ -514,7 +519,8 @@ public class Application {
                                     break;
                                 }
                                 else if (dealerPoints == splitPoints) {
-                                    game.playerWin();
+                                    if(player.isBlackjack()) game.blackjack();
+                                    else game.playerWin();
                                     game.splitPush();
                                     System.out.println("\n오리진: 플레이어 Win");
                                     System.out.println("스플릿: 푸시");
