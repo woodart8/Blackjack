@@ -15,3 +15,9 @@
 **Build Tool** :
 
 ![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)
+
+---
+
+** 실행 화면 **
+
+![image](https://github.com/user-attachments/assets/78cac97f-59ad-419f-86af-e6d0a3a991d6)
