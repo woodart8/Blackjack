@@ -18,6 +18,6 @@
 
 ---
 
-** 실행 화면 **
+**실행 화면**
 
 ![image](https://github.com/user-attachments/assets/78cac97f-59ad-419f-86af-e6d0a3a991d6)
